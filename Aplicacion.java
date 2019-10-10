@@ -1,6 +1,6 @@
-package Manuel;
+package Compilador;
 public class Aplicacion {
 	public static void main(String[] args) {
-		new Vista();//crea la vista
+		new Vista();
 	}
 }

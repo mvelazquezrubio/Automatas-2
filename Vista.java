@@ -1,4 +1,4 @@
-package Manuel;
+package Compilador;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
@@ -72,7 +72,7 @@ public class Vista extends JFrame implements ActionListener{
 		documentos.setToolTipText("Aqui se muestra el codigo");
 		archivo=archivoSeleccionado.getSelectedFile();
 		documentos.addTab(archivo.getName().toString(),new JScrollPane(Doc));
-		analizada.addTab("Lexico",new JScrollPane(Lex));
+		analizada.addTab("Compilador",new JScrollPane(Lex));
 		resultados.addTab("Resultados",new JScrollPane(Result));
 		/*Llenado del documento en pantalla*/
 		abrir();
@@ -81,7 +81,7 @@ public class Vista extends JFrame implements ActionListener{
 		add(documentos);
 		analizada.setBounds(664, 1,687,473);
 		add(analizada);
-		resultados.setBounds(1,451,1350,260);
+		resultados.setBounds(1,451,665,260);
 		add(resultados);
 		setVisible(true);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -118,6 +118,12 @@ public class Vista extends JFrame implements ActionListener{
 			new Sintactico();
 			llena(Lex,Result,"");
 			analisis.getItem(2).setEnabled(false);
+			new GeneraTabla();
+			/*for(int i=0;i<Sintactico.TablaSimbolos.size();i++){
+				System.out.println("Nombre: "+Sintactico.TablaSimbolos.get(i).nombre);
+				System.out.println("Tipo: "+Sintactico.TablaSimbolos.get(i).tipo);
+				System.out.println("Valor: "+Sintactico.TablaSimbolos.get(i).valor);
+			}*/
 		}
 	}
 	public boolean guardar() {
@@ -161,6 +167,7 @@ public class Vista extends JFrame implements ActionListener{
 		}else {
 			cuadro.setText(mensalida);
 		}
+		
 	}
 	public void formatoWindows() {
 		try {

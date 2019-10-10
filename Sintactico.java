@@ -1,4 +1,4 @@
-package Manuel;
+package Compilador;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -67,7 +67,7 @@ public class Sintactico {
 					errorS=true;
 				}
 				if(Lexico.tokenAnalizados.get(iniciador-1).getTipo().equals("Clase"))
-					TablaSimbolos.add(new Identificador(Lexico.tokenAnalizados.get(iniciador).getValor(),"","Clase"));
+					TablaSimbolos.add(new Identificador(Lexico.tokenAnalizados.get(iniciador).getValor(),"","Clase",0));
 				iniciador++;
 				continue;
 			}
@@ -132,7 +132,7 @@ public class Sintactico {
 								valor+=Lexico.tokenAnalizados.get(iniciador).getValor();
 								iniciador++;
 							}
-							TablaSimbolos.add(new Identificador(iden,valor,a));
+							TablaSimbolos.add(new Identificador(iden,valor,a,0));
 						}else {
 							Lexico.errores.add("Error Sintactico se esperaba una constante o variable.");
 							errorS=true;
