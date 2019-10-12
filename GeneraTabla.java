@@ -55,7 +55,8 @@ public class GeneraTabla {
 					if(ide.nombre.equals(Lexico.tokenAnalizados.get(aux2-1).getValor())){
 						if(Variables.get(j).getAlcance().equals("Local") && (Lexico.tokenAnalizados.get(aux2-1).getLinea()<Variables.get(j).getDesde()
 								|| Lexico.tokenAnalizados.get(aux2-1).getLinea()>Variables.get(j).getHasta())){
-							System.out.println("Error: La variable "+Lexico.tokenAnalizados.get(aux2-1).getValor()+" no ha sido declarada. Linea: "+Lexico.tokenAnalizados.get(aux2-1).getLinea());
+							//Se esta queriendo utilizar fuera del rango
+							//asi que se guardara como no declarada
 						}else{
 							Variables.get(j).setValor(valor);;
 							encontrado=true;

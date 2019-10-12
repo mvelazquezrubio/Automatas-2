@@ -130,11 +130,7 @@ public class Vista extends JFrame implements ActionListener{
 			analisis.getItem(2).setEnabled(false);
 			new GeneraTabla();
 			new Semantico();
-			/*for(int i=0;i<Sintactico.TablaSimbolos.size();i++){
-				System.out.println("Nombre: "+Sintactico.TablaSimbolos.get(i).nombre);
-				System.out.println("Tipo: "+Sintactico.TablaSimbolos.get(i).tipo);
-				System.out.println("Valor: "+Sintactico.TablaSimbolos.get(i).valor);
-			}*/
+			llena(Lex,Result,"");
 		}
 	}
 	public boolean guardar() {
