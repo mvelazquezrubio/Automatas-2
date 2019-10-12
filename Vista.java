@@ -17,6 +17,10 @@ public class Vista extends JFrame implements ActionListener{
 	JTextArea Doc,Lex,Result,inter,objeto;
 	JList<String> tokens;
 	boolean ban=true;
+	static DefaultTableModel modelo;
+	String titulos[]={"Nombre","Tipo","Valor","Posicion"};
+	JTable tabla;
+	JScrollPane Tabla;
 	public Vista() {
 		formatoWindows();
 		inicializaciones();
@@ -74,6 +78,9 @@ public class Vista extends JFrame implements ActionListener{
 		documentos.addTab(archivo.getName().toString(),new JScrollPane(Doc));
 		analizada.addTab("Compilador",new JScrollPane(Lex));
 		resultados.addTab("Resultados",new JScrollPane(Result));
+		modelo = new DefaultTableModel(null,titulos);//Modelo de las tablas
+		tabla= new JTable(modelo);//tabla de simbolos
+		Tabla = new JScrollPane(tabla);
 		/*Llenado del documento en pantalla*/
 		abrir();
 		/*Posicionamiento de los componentes de texto en pantalla*/
@@ -83,6 +90,8 @@ public class Vista extends JFrame implements ActionListener{
 		add(analizada);
 		resultados.setBounds(1,451,665,260);
 		add(resultados);
+		Tabla.setBounds(664, 475,685, 235);
+		add(Tabla);
 		setVisible(true);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 	}
@@ -106,6 +115,7 @@ public class Vista extends JFrame implements ActionListener{
 		}
 		/*Lexico*/
 		if(e.getSource()==analisis.getItem(0)) {
+			reinicia();
 			new Lexico(archivo.getAbsolutePath());
 			ban=false;//Es para evitar que se guarde sin darle modificar
 			llena(Lex,Result,"");//Lleno las area de texto con lo analizado
@@ -119,6 +129,7 @@ public class Vista extends JFrame implements ActionListener{
 			llena(Lex,Result,"");
 			analisis.getItem(2).setEnabled(false);
 			new GeneraTabla();
+			new Semantico();
 			/*for(int i=0;i<Sintactico.TablaSimbolos.size();i++){
 				System.out.println("Nombre: "+Sintactico.TablaSimbolos.get(i).nombre);
 				System.out.println("Tipo: "+Sintactico.TablaSimbolos.get(i).tipo);
@@ -167,12 +178,16 @@ public class Vista extends JFrame implements ActionListener{
 		}else {
 			cuadro.setText(mensalida);
 		}
-		
 	}
 	public void formatoWindows() {
 		try {
 			UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
 		} catch (Exception e) {
 		}
+	}
+	
+	public void  reinicia(){
+		Lexico.renglon=1;
+		GeneraTabla.Variables.clear();
 	}
 }
