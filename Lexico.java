@@ -127,7 +127,7 @@ public class Lexico
 			return false;
 	}
 	public boolean esTipoDato(String token) {
-		if(token.equals("int")||token.equals("double")||token.equals("String")||token.equals("boolean")) {
+		if(token.equals("int")||token.equals("double")||token.equals("String")||token.equals("boolean")){
 			tokenAnalizados.add(new Token("Tipo de datos",token,renglon));//Guardo el token analizado
 			return true;
 		}else

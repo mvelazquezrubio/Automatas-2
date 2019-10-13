@@ -22,6 +22,8 @@ public class GeneraTabla {
 					i+=3;
 					while(!Lexico.tokenAnalizados.get(i).getValor().equals(";")) {
 						valor+=Lexico.tokenAnalizados.get(i).getValor();
+						if(!Lexico.tokenAnalizados.get(i+1).getValor().equals(";"))
+						valor+=" ";
 						i++;
 					}
 					if(buscaAlcance(Lexico.tokenAnalizados.get(aux+1))=="Global")
@@ -46,6 +48,8 @@ public class GeneraTabla {
 				i++;
 				while(!Lexico.tokenAnalizados.get(i).getValor().equals(";")) {
 					valor+=Lexico.tokenAnalizados.get(i).getValor();
+					if(!Lexico.tokenAnalizados.get(i+1).getValor().equals(";"))
+					valor+=" ";
 					i++;
 				}
 				//Se busca si la variable se declaro antes sin valor
