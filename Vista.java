@@ -45,6 +45,9 @@ public class Vista extends JFrame implements ActionListener{
 		analisis.addSeparator();
 		analisis.add(new JMenuItem("Sintactico"));
 		analisis.getItem(2).setEnabled(false);
+		analisis.addSeparator();
+		analisis.add(new JMenuItem("Semantico"));
+		analisis.getItem(4).setEnabled(false);
 		/*Ventana de archivo*/
 		archivoSeleccionado= new JFileChooser("Abrir");
 		archivoSeleccionado.setDialogTitle("Abrir");
@@ -101,6 +104,7 @@ public class Vista extends JFrame implements ActionListener{
 		opcion.getItem(2).addActionListener(this);
 		analisis.getItem(0).addActionListener(this);
 		analisis.getItem(2).addActionListener(this);
+		analisis.getItem(4).addActionListener(this);
 	}
 	public void actionPerformed(ActionEvent e) {
 		/*Opciones de archivo*/
@@ -129,6 +133,12 @@ public class Vista extends JFrame implements ActionListener{
 			new Sintactico();
 			llena(Lex,Result,"");
 			analisis.getItem(2).setEnabled(false);
+			if(Lexico.errores.get(1).equals("No hay errores sintacticos"))//Si el analisis sintactico se hizo correctamente se habilita el semantico
+				analisis.getItem(4).setEnabled(true);
+		}
+		/*Semantico*/
+		if(e.getSource()==analisis.getItem(4)) {
+			analisis.getItem(4).setEnabled(false);
 			new GeneraTabla();
 			new Semantico();
 			llena(Lex,Result,"");
