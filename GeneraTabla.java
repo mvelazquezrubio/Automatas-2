@@ -3,7 +3,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.regex.Pattern;
 public class GeneraTabla {
-	static ArrayList<Identificador> Variables = new ArrayList<Identificador>();
+	static ArrayList<Identificador> TablaDeSimbolos = new ArrayList<Identificador>();
 	String aux="";
 	boolean ban=false;
 	int llaveabre, llavecierra, desde, hasta;
@@ -27,16 +27,16 @@ public class GeneraTabla {
 						i++;
 					}
 					if(buscaAlcance(Lexico.tokenAnalizados.get(aux+1))=="Global")
-					Variables.add(new Identificador(Lexico.tokenAnalizados.get(aux+1).getValor(),valor,Lexico.tokenAnalizados.get(aux).getValor(),Lexico.tokenAnalizados.get(aux+1).getLinea(),"Global"));
+					TablaDeSimbolos.add(new Identificador(Lexico.tokenAnalizados.get(aux+1).getValor(),valor,Lexico.tokenAnalizados.get(aux).getValor(),Lexico.tokenAnalizados.get(aux+1).getLinea(),"Global"));
 					else
-					Variables.add(new Identificador(Lexico.tokenAnalizados.get(aux+1).getValor(),valor,Lexico.tokenAnalizados.get(aux).getValor(),Lexico.tokenAnalizados.get(aux+1).getLinea(),"Local",desde,hasta));
+					TablaDeSimbolos.add(new Identificador(Lexico.tokenAnalizados.get(aux+1).getValor(),valor,Lexico.tokenAnalizados.get(aux).getValor(),Lexico.tokenAnalizados.get(aux+1).getLinea(),"Local",desde,hasta));
 					
 				}
 				else if(Lexico.tokenAnalizados.get(i+2).getValor().equals(";")){
 					if(buscaAlcance(Lexico.tokenAnalizados.get(i+1))=="Global")
-						Variables.add(new Identificador(Lexico.tokenAnalizados.get(i+1).getValor(),"",Lexico.tokenAnalizados.get(i).getValor(),Lexico.tokenAnalizados.get(i+1).getLinea(),"Global"));
+						TablaDeSimbolos.add(new Identificador(Lexico.tokenAnalizados.get(i+1).getValor(),"",Lexico.tokenAnalizados.get(i).getValor(),Lexico.tokenAnalizados.get(i+1).getLinea(),"Global"));
 					else
-						Variables.add(new Identificador(Lexico.tokenAnalizados.get(i+1).getValor(),"",Lexico.tokenAnalizados.get(i).getValor(),Lexico.tokenAnalizados.get(i+1).getLinea(),"Local",desde,hasta));	
+						TablaDeSimbolos.add(new Identificador(Lexico.tokenAnalizados.get(i+1).getValor(),"",Lexico.tokenAnalizados.get(i).getValor(),Lexico.tokenAnalizados.get(i+1).getLinea(),"Local",desde,hasta));	
 				//se guarda sin valor
 				}
 			}
@@ -54,21 +54,21 @@ public class GeneraTabla {
 				}
 				//Se busca si la variable se declaro antes sin valor
 				boolean encontrado=false;
-				for(int j=0;j<Variables.size();j++){
-					Identificador ide = Variables.get(j);
+				for(int j=0;j<TablaDeSimbolos.size();j++){
+					Identificador ide = TablaDeSimbolos.get(j);
 					if(ide.nombre.equals(Lexico.tokenAnalizados.get(aux2-1).getValor())){
-						if(Variables.get(j).getAlcance().equals("Local") && (Lexico.tokenAnalizados.get(aux2-1).getLinea()<Variables.get(j).getDesde()
-								|| Lexico.tokenAnalizados.get(aux2-1).getLinea()>Variables.get(j).getHasta())){
+						if(TablaDeSimbolos.get(j).getAlcance().equals("Local") && (Lexico.tokenAnalizados.get(aux2-1).getLinea()<TablaDeSimbolos.get(j).getDesde()
+								|| Lexico.tokenAnalizados.get(aux2-1).getLinea()>TablaDeSimbolos.get(j).getHasta())){
 							//Se esta queriendo utilizar fuera del rango
 							//asi que se guardara como no declarada
 						}else{
-							Variables.get(j).setValor(valor);;
+							TablaDeSimbolos.get(j).setValor(valor);;
 							encontrado=true;
 						}
 					}
 				}
 				if(!encontrado)//Si no se encontro, lo guardamos pero sin tipo por no declarada
-					Variables.add(new Identificador(Lexico.tokenAnalizados.get(aux2-1).getValor(),valor,"",Lexico.tokenAnalizados.get(aux2-1).getLinea(),"No declarada"));
+					TablaDeSimbolos.add(new Identificador(Lexico.tokenAnalizados.get(aux2-1).getValor(),valor,"",Lexico.tokenAnalizados.get(aux2-1).getLinea(),"No declarada"));
 			}
 		}
 		llenarTabla();
@@ -115,14 +115,14 @@ public class GeneraTabla {
 		}*/
 		
 		System.out.println("DECLARADAS:");
-		for(int i=0;i<Variables.size();i++){
-			System.out.println("Nombre:"+Variables.get(i).getNombre());
-			System.out.println("Tipo:"+Variables.get(i).getTipo());
-			System.out.println("Valor:"+Variables.get(i).getValor());
-			System.out.println("Posicion:"+Variables.get(i).getLinea());
-			System.out.println("Alcance:"+Variables.get(i).getAlcance());
-			System.out.println("Desde:"+Variables.get(i).getDesde());
-			System.out.println("Hasta:"+Variables.get(i).getHasta());
+		for(int i=0;i<TablaDeSimbolos.size();i++){
+			System.out.println("Nombre:"+TablaDeSimbolos.get(i).getNombre());
+			System.out.println("Tipo:"+TablaDeSimbolos.get(i).getTipo());
+			System.out.println("Valor:"+TablaDeSimbolos.get(i).getValor());
+			System.out.println("Posicion:"+TablaDeSimbolos.get(i).getLinea());
+			System.out.println("Alcance:"+TablaDeSimbolos.get(i).getAlcance());
+			System.out.println("Desde:"+TablaDeSimbolos.get(i).getDesde());
+			System.out.println("Hasta:"+TablaDeSimbolos.get(i).getHasta());
 		}
 	}
 	

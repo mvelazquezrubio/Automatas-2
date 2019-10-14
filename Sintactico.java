@@ -187,7 +187,8 @@ public class Sintactico {
 				}
 				iniciador++;
 				continue;
-			}
+			}else
+			iniciador++;
 		}
 		if(banLlave)
 			Lexico.errores.add("Error Sintactico falta de llave.");

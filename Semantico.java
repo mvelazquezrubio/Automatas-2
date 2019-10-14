@@ -4,11 +4,10 @@ import java.util.ArrayList;
 import java.util.StringTokenizer;
 
 public class Semantico {
-	static ArrayList<Identificador> TablaDeSimbolos = new ArrayList<Identificador>();
 	public Semantico(){
-		//Validacion de variables utilizadas sin declarar
+		//Validacion de TablaDeSimbolos utilizadas sin declarar
 		ValidarDeclaracion();
-		//Validacion de variables ya declaradas
+		//Validacion de TablaDeSimbolos ya declaradas
 		ValidarDuplicado();
 		//Validar asignacion auna variable
 		ValidarAsignacion();
@@ -16,8 +15,8 @@ public class Semantico {
 		ValidarOperandos();
 	}
 	public void ValidarDeclaracion(){
-		for(int i=0;i<GeneraTabla.Variables.size();i++){
-			Identificador ide = GeneraTabla.Variables.get(i);
+		for(int i=0;i<GeneraTabla.TablaDeSimbolos.size();i++){
+			Identificador ide = GeneraTabla.TablaDeSimbolos.get(i);
 			if(ide.getTipo().equals(""))
 				Lexico.errores.add("Error en la linea "+ide.getLinea()+": La variable "+ide.getNombre()+" no ha sido declarada.");
 		}
@@ -25,10 +24,10 @@ public class Semantico {
 	}
 	
 	public void ValidarDuplicado(){
-		for(int i=0;i<GeneraTabla.Variables.size()-1;i++){
-			Identificador variable1= GeneraTabla.Variables.get(i);
-			for(int j=i+1;j<GeneraTabla.Variables.size();j++){
-				Identificador variable2= GeneraTabla.Variables.get(j);
+		for(int i=0;i<GeneraTabla.TablaDeSimbolos.size()-1;i++){
+			Identificador variable1= GeneraTabla.TablaDeSimbolos.get(i);
+			for(int j=i+1;j<GeneraTabla.TablaDeSimbolos.size();j++){
+				Identificador variable2= GeneraTabla.TablaDeSimbolos.get(j);
 				if(variable1.getNombre().equals(variable2.getNombre()) && (!variable2.getTipo().equals("") || !variable1.getTipo().equals(""))){
 					//Son iguales, se debe verificar sus alcances
 					if(variable1.getAlcance().equals("Global") && variable2.getAlcance().equals("Global")){
@@ -54,8 +53,8 @@ public class Semantico {
 		//Aqui validaremos solamente cuando se le iguala un valor a la variable
 		//cuando se le asigan una expresion sera validado en el metodo de operadores
 		StringTokenizer tokenizer;
-		for(int i=0;i<GeneraTabla.Variables.size();i++){
-			Identificador ide = GeneraTabla.Variables.get(i);
+		for(int i=0;i<GeneraTabla.TablaDeSimbolos.size();i++){
+			Identificador ide = GeneraTabla.TablaDeSimbolos.get(i);
 			tokenizer = new StringTokenizer(ide.getValor());
 			//Validar variable booleana
 			if(ide.getTipo().equals("boolean") && tokenizer.countTokens()==1){
@@ -95,8 +94,44 @@ public class Semantico {
 }
 	
 	public void ValidarOperandos(){
+		ArrayList<String> tokensExpresion = new ArrayList<String>();
+		for(int i =0;i<GeneraTabla.TablaDeSimbolos.size();i++){
+			Identificador ide = GeneraTabla.TablaDeSimbolos.get(i);//obtenemos el valor
+			StringTokenizer tokenizer = new StringTokenizer(ide.getValor());
+			int z=tokenizer.countTokens();
+			for(int j=0;j<z;j++){
+				tokensExpresion.add(tokenizer.nextToken());//los metemos separados en array
+			}
+			if(GeneraTabla.TablaDeSimbolos.get(i).getTipo().equals("boolean") && tokensExpresion.size()>1){
+				Lexico.errores.add("Error en la linea "+buscaLinea(ide)+": La variable "+ide.getNombre()+" de tipo "+ide.getTipo()+" no se le puede asignar una expresion.");
 		
+			}else if(GeneraTabla.TablaDeSimbolos.get(i).getTipo().equals("int") && tokensExpresion.size()>1){
+				//Los recorremos para buscar que todos sean enteros
+				for(int j=0;j<tokensExpresion.size();j++){
+					if(!tokensExpresion.get(j).equals("+") && !tokensExpresion.get(j).equals("-") && !tokensExpresion.get(j).equals("/")
+							&& !tokensExpresion.get(j).equals("*")){
+						//Si no es un operador entonces es un operando
+						if(!revisaOperandos(tokensExpresion.get(j),"int")){//si no es entero ni variable entera
+							Lexico.errores.add("Error en la linea "+buscaLineaE(ide,tokensExpresion.get(0))+": Existen valores no enteros en la expresion");
+						}
+					}
+				}
+			}else if(GeneraTabla.TablaDeSimbolos.get(i).getTipo().equals("double") && tokensExpresion.size()>1){
+				//Los recorremos para buscar que todos sean enteros
+				for(int j=0;j<tokensExpresion.size();j++){
+					if(!tokensExpresion.get(j).equals("+") && !tokensExpresion.get(j).equals("-") && !tokensExpresion.get(j).equals("/")
+							&& !tokensExpresion.get(j).equals("*")){
+						//Si no es un operador entonces es un operando
+						if(!revisaOperandos(tokensExpresion.get(j),"double")){//si no es double ni variable double
+							Lexico.errores.add("Error en la linea "+buscaLineaE(ide,tokensExpresion.get(0))+": Existen valores no double en la expresion");
+						}
+					}
+				}
+			}
+			tokensExpresion.clear();
+		}
 	}
+	
 	
 	public boolean EsEntero(String cadena) {
         boolean resultado;
@@ -149,5 +184,49 @@ public class Semantico {
 			}
 		}
 		return linea;
+	}
+	
+	public int buscaLineaE(Identificador ide, String e){
+		int linea=0;
+		for(int i=0;i<Lexico.tokenAnalizados.size();i++){
+			if(Lexico.tokenAnalizados.get(i).getValor().equals(ide.getNombre())
+					&& Lexico.tokenAnalizados.get(i+1).getValor().equals("=")
+					&& Lexico.tokenAnalizados.get(i+2).getValor().equals(e)){
+				linea=Lexico.tokenAnalizados.get(i).getLinea();
+			}
+		}
+		return linea;
+	}
+	
+	public boolean revisaOperandos(String operando, String tipo){
+		boolean tipoCorrecto=false;
+		if(tipo.equals("int")){
+		if(EsEntero(operando)){//verificamos que sea numero entero
+			tipoCorrecto=true;
+		}else{
+			//buscamos si es un identificador entero
+			for(int i=0; i<GeneraTabla.TablaDeSimbolos.size();i++){
+				if(GeneraTabla.TablaDeSimbolos.get(i).getNombre().equals(operando)
+						&& GeneraTabla.TablaDeSimbolos.get(i).getTipo().equals("int")){
+					tipoCorrecto=true;
+					break;
+				}
+			}
+		}
+		}else{
+			if(EsDouble(operando)){//verificamos que sea numero entero
+				tipoCorrecto=true;
+			}else{
+				//buscamos si es un identificador entero
+				for(int i=0; i<GeneraTabla.TablaDeSimbolos.size();i++){
+					if(GeneraTabla.TablaDeSimbolos.get(i).getNombre().equals(operando)
+							&& GeneraTabla.TablaDeSimbolos.get(i).getTipo().equals("double")){
+						tipoCorrecto=true;
+						break;
+					}
+				}
+			}
+		}
+		return tipoCorrecto;
 	}
 }

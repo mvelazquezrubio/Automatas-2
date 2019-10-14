@@ -184,6 +184,6 @@ public class Vista extends JFrame implements ActionListener{
 	
 	public void  reinicia(){
 		Lexico.renglon=1;
-		GeneraTabla.Variables.clear();
+		GeneraTabla.TablaDeSimbolos.clear();
 	}
 }
