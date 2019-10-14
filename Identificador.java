@@ -9,6 +9,7 @@ public class Identificador {
 	int linea;
 	int desde;
 	int hasta;
+	boolean correcta=true;
 		
 	public Identificador(String nombre, String valor, String tipo,int linea,String alcance) {
 		this.nombre = nombre;
@@ -75,6 +76,12 @@ public class Identificador {
 	}
 	public void setHasta(int Hasta) {
 		this.hasta = hasta;
+	}
+	public boolean getCorrecta() {
+		return correcta;
+	}
+	public void setCorrecta(boolean correcta) {
+		this.correcta = correcta;
 	}
 	public String toString() {
 		return "Identificador [nombre=" + nombre + ", valor=" + valor + ", tipo=" + tipo + "]";

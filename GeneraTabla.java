@@ -3,11 +3,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.regex.Pattern;
 public class GeneraTabla {
-	static ArrayList<Identificador> TablaDeSimbolos = new ArrayList<Identificador>();
+	static ArrayList<Identificador> TablaDeSimbolos;
 	String aux="";
 	boolean ban=false;
 	int llaveabre, llavecierra, desde, hasta;
 	public GeneraTabla(){
+		TablaDeSimbolos = new ArrayList<Identificador>();
 		llaveabre=0;
 		llavecierra=0;
 		desde=0;
@@ -71,7 +72,6 @@ public class GeneraTabla {
 					TablaDeSimbolos.add(new Identificador(Lexico.tokenAnalizados.get(aux2-1).getValor(),valor,"",Lexico.tokenAnalizados.get(aux2-1).getLinea(),"No declarada"));
 			}
 		}
-		llenarTabla();
 	}
 	public String buscaAlcance(Token token){
 		llaveabre=0;
@@ -105,25 +105,17 @@ public class GeneraTabla {
 			alcance="Local";
 		return alcance;
 	}
-	public void llenarTabla(){
-		/*for(int i=0;i<TablaDeSimbolos.size();i++){
+	public static void llenarTabla(){
+		for(int i=0;i<TablaDeSimbolos.size();i++){
+			if(TablaDeSimbolos.get(i).getCorrecta()){
 			Vista.modelo.insertRow(Vista.modelo.getRowCount(),new Object[]{
 					TablaDeSimbolos.get(i).getNombre(),
 					TablaDeSimbolos.get(i).getTipo(),
 					TablaDeSimbolos.get(i).getValor(),
-					TablaDeSimbolos.get(i).getLinea()});
-		}*/
-		
-		System.out.println("DECLARADAS:");
-		for(int i=0;i<TablaDeSimbolos.size();i++){
-			System.out.println("Nombre:"+TablaDeSimbolos.get(i).getNombre());
-			System.out.println("Tipo:"+TablaDeSimbolos.get(i).getTipo());
-			System.out.println("Valor:"+TablaDeSimbolos.get(i).getValor());
-			System.out.println("Posicion:"+TablaDeSimbolos.get(i).getLinea());
-			System.out.println("Alcance:"+TablaDeSimbolos.get(i).getAlcance());
-			System.out.println("Desde:"+TablaDeSimbolos.get(i).getDesde());
-			System.out.println("Hasta:"+TablaDeSimbolos.get(i).getHasta());
+					TablaDeSimbolos.get(i).getLinea(),
+					TablaDeSimbolos.get(i).getAlcance()});
+			}
 		}
+		
 	}
-	
 }

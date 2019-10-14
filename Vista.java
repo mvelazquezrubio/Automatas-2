@@ -18,7 +18,7 @@ public class Vista extends JFrame implements ActionListener{
 	JList<String> tokens;
 	boolean ban=true;
 	static DefaultTableModel modelo;
-	String titulos[]={"Nombre","Tipo","Valor","Posicion"};
+	String titulos[]={"Nombre","Tipo","Valor","Posicion","Alcance"};
 	JTable tabla;
 	JScrollPane Tabla;
 	public Vista() {
@@ -116,6 +116,7 @@ public class Vista extends JFrame implements ActionListener{
 		/*Lexico*/
 		if(e.getSource()==analisis.getItem(0)) {
 			reinicia();
+			limpiarTabla();
 			new Lexico(archivo.getAbsolutePath());
 			ban=false;//Es para evitar que se guarde sin darle modificar
 			llena(Lex,Result,"");//Lleno las area de texto con lo analizado
@@ -184,6 +185,11 @@ public class Vista extends JFrame implements ActionListener{
 	
 	public void  reinicia(){
 		Lexico.renglon=1;
-		GeneraTabla.TablaDeSimbolos.clear();
+	}
+	
+	public void limpiarTabla(){
+		while(tabla.getRowCount()!=0){
+			((DefaultTableModel)tabla.getModel()).removeRow(0);
+		}
 	}
 }

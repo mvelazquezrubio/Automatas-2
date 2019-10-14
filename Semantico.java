@@ -13,12 +13,18 @@ public class Semantico {
 		ValidarAsignacion();
 		//Validar operando de tipos compatibles
 		ValidarOperandos();
+		if(Lexico.errores.get(Lexico.errores.size()-1).equals("No hay errores sintacticos"))
+			Lexico.errores.add("No hay errores semanticos");
+		GeneraTabla.llenarTabla();
+		
 	}
 	public void ValidarDeclaracion(){
 		for(int i=0;i<GeneraTabla.TablaDeSimbolos.size();i++){
 			Identificador ide = GeneraTabla.TablaDeSimbolos.get(i);
-			if(ide.getTipo().equals(""))
+			if(ide.getTipo().equals("")){
 				Lexico.errores.add("Error en la linea "+ide.getLinea()+": La variable "+ide.getNombre()+" no ha sido declarada.");
+				GeneraTabla.TablaDeSimbolos.get(i).setCorrecta(false);
+			}
 		}
 		
 	}
@@ -32,16 +38,19 @@ public class Semantico {
 					//Son iguales, se debe verificar sus alcances
 					if(variable1.getAlcance().equals("Global") && variable2.getAlcance().equals("Global")){
 						Lexico.errores.add("Error en la linea "+variable2.getLinea()+": La variable "
-								+variable2.getNombre()+" ya fue declarada en la linea "+variable1.getLinea());	
+								+variable2.getNombre()+" ya fue declarada en la linea "+variable1.getLinea());
+						GeneraTabla.TablaDeSimbolos.get(j).setCorrecta(false);
 					}
 					else if(variable1.getAlcance().equals("Global") && variable2.getAlcance().equals("Local")){
 						Lexico.errores.add("Error en la linea "+variable2.getLinea()+": La variable "
-								+variable2.getNombre()+" ya fue declarada en la linea "+variable1.getLinea());	
+								+variable2.getNombre()+" ya fue declarada en la linea "+variable1.getLinea());
+						GeneraTabla.TablaDeSimbolos.get(j).setCorrecta(false);
 					}
 					else if(variable1.getAlcance().equals("Local") && variable2.getAlcance().equals("Local")){
 						if(variable1.getDesde()<variable2.getDesde())
 							Lexico.errores.add("Error en la linea "+variable2.getLinea()+": La variable "
 									+variable2.getNombre()+" ya fue declarada en la linea "+variable1.getLinea());	
+						GeneraTabla.TablaDeSimbolos.get(j).setCorrecta(false);
 					}
 					
 				}
@@ -60,33 +69,43 @@ public class Semantico {
 			if(ide.getTipo().equals("boolean") && tokenizer.countTokens()==1){
 				if(EsEntero(ide.getValor())){	
 					Lexico.errores.add("Error en la linea "+buscaLinea(ide)+": La variable "+ide.getNombre()+" de tipo "+ide.getTipo()+" no se le puede asignar un valor int.");
+					GeneraTabla.TablaDeSimbolos.get(i).setCorrecta(false);
 				}else if(EsDouble(ide.getValor())){
 					Lexico.errores.add("Error en la linea "+buscaLinea(ide)+": La variable "+ide.getNombre()+" de tipo "+ide.getTipo()+" no se le puede asignar un valor double.");
-				}else if(!EsBooleana(ide.getValor()))
+					GeneraTabla.TablaDeSimbolos.get(i).setCorrecta(false);
+				}else if(!EsBooleana(ide.getValor())){
 					Lexico.errores.add("Error en la linea "+buscaLinea(ide)+": La variable "+ide.getNombre()+" de tipo "+ide.getTipo()+" no se le puede asignar un valor cadena.");
-			}
+					GeneraTabla.TablaDeSimbolos.get(i).setCorrecta(false);
+				}
+				}
 			//Validar variable entera
 			else if(ide.getTipo().equals("int") && tokenizer.countTokens()==1){
 				if(EsDouble(ide.getValor())){
 					Lexico.errores.add("Error en la linea "+buscaLinea(ide)+": La variable "+ide.getNombre()+" de tipo "+ide.getTipo()+" no se le puede asignar un valor double.");
+					GeneraTabla.TablaDeSimbolos.get(i).setCorrecta(false);
 				}
 				else if(EsBooleana(ide.getValor())){
 					Lexico.errores.add("Error en la linea "+buscaLinea(ide)+": La variable "+ide.getNombre()+" de tipo "+ide.getTipo()+" no se le puede asignar un valor boolean.");
+					GeneraTabla.TablaDeSimbolos.get(i).setCorrecta(false);
 				}
 				else if(!EsEntero(ide.getValor())){
 					Lexico.errores.add("Error en la linea "+buscaLinea(ide)+": La variable "+ide.getNombre()+" de tipo "+ide.getTipo()+" no se le puede asignar un valor cadena.");
+					GeneraTabla.TablaDeSimbolos.get(i).setCorrecta(false);
 				}
 			}
 			//Validar variable double
 			else if(ide.getTipo().equals("double") && tokenizer.countTokens()==1){
 				if(EsEntero(ide.getValor())){
 					Lexico.errores.add("Error en la linea "+buscaLinea(ide)+": La variable "+ide.getNombre()+" de tipo "+ide.getTipo()+" no se le puede asignar un valor int.");
+					GeneraTabla.TablaDeSimbolos.get(i).setCorrecta(false);
 				}
 				else if(EsBooleana(ide.getValor())){
 					Lexico.errores.add("Error en la linea "+buscaLinea(ide)+": La variable "+ide.getNombre()+" de tipo "+ide.getTipo()+" no se le puede asignar un valor boolean.");
+					GeneraTabla.TablaDeSimbolos.get(i).setCorrecta(false);
 				}
 				else if(!EsDouble(ide.getValor())){
 					Lexico.errores.add("Error en la linea "+buscaLinea(ide)+": La variable "+ide.getNombre()+" de tipo "+ide.getTipo()+" no se le puede asignar un valor cadena.");
+					GeneraTabla.TablaDeSimbolos.get(i).setCorrecta(false);
 				}
 			}
 			//variables string pueden asignar cualquier cadena y cualquier caracter
@@ -102,10 +121,10 @@ public class Semantico {
 			for(int j=0;j<z;j++){
 				tokensExpresion.add(tokenizer.nextToken());//los metemos separados en array
 			}
-			if(GeneraTabla.TablaDeSimbolos.get(i).getTipo().equals("boolean") && tokensExpresion.size()>1){
+			if(ide.getTipo().equals("boolean") && tokensExpresion.size()>1){
 				Lexico.errores.add("Error en la linea "+buscaLinea(ide)+": La variable "+ide.getNombre()+" de tipo "+ide.getTipo()+" no se le puede asignar una expresion.");
-		
-			}else if(GeneraTabla.TablaDeSimbolos.get(i).getTipo().equals("int") && tokensExpresion.size()>1){
+				GeneraTabla.TablaDeSimbolos.get(i).setCorrecta(false);
+			}else if(ide.getTipo().equals("int") && tokensExpresion.size()>1){
 				//Los recorremos para buscar que todos sean enteros
 				for(int j=0;j<tokensExpresion.size();j++){
 					if(!tokensExpresion.get(j).equals("+") && !tokensExpresion.get(j).equals("-") && !tokensExpresion.get(j).equals("/")
@@ -113,17 +132,19 @@ public class Semantico {
 						//Si no es un operador entonces es un operando
 						if(!revisaOperandos(tokensExpresion.get(j),"int")){//si no es entero ni variable entera
 							Lexico.errores.add("Error en la linea "+buscaLineaE(ide,tokensExpresion.get(0))+": Existen valores no enteros en la expresion");
+							GeneraTabla.TablaDeSimbolos.get(i).setCorrecta(false);
 						}
 					}
 				}
-			}else if(GeneraTabla.TablaDeSimbolos.get(i).getTipo().equals("double") && tokensExpresion.size()>1){
-				//Los recorremos para buscar que todos sean enteros
+			}else if(ide.getTipo().equals("double") && tokensExpresion.size()>1){
+				//Los recorremos para buscar que todos sean double
 				for(int j=0;j<tokensExpresion.size();j++){
 					if(!tokensExpresion.get(j).equals("+") && !tokensExpresion.get(j).equals("-") && !tokensExpresion.get(j).equals("/")
 							&& !tokensExpresion.get(j).equals("*")){
 						//Si no es un operador entonces es un operando
 						if(!revisaOperandos(tokensExpresion.get(j),"double")){//si no es double ni variable double
 							Lexico.errores.add("Error en la linea "+buscaLineaE(ide,tokensExpresion.get(0))+": Existen valores no double en la expresion");
+							GeneraTabla.TablaDeSimbolos.get(i).setCorrecta(false);
 						}
 					}
 				}
