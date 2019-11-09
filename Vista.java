@@ -142,6 +142,7 @@ public class Vista extends JFrame implements ActionListener{
 			new GeneraTabla();
 			new Semantico();
 			llena(Lex,Result,"");
+			new Intermedio();
 		}
 	}
 	public boolean guardar() {
