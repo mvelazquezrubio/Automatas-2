@@ -4,7 +4,7 @@ public class Intermedio {
 	ArrayList<String> expresion = new ArrayList<String>();
 	ArrayList<String> expresionEditada = new ArrayList<String>();
 	ArrayList<String> aux = new ArrayList<String>();
-	ArrayList<String> Tabla = new ArrayList<String>();
+	static ArrayList<String> Tabla = new ArrayList<String>();
 	public Intermedio(){
 		for(int j=0;j<GeneraTabla.TablaDeSimbolos.size();j++){
 			if(GeneraTabla.TablaDeSimbolos.get(j).getValor().contains(" ")){

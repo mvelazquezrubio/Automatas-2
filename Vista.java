@@ -21,6 +21,10 @@ public class Vista extends JFrame implements ActionListener{
 	String titulos[]={"Nombre","Tipo","Valor","Posicion","Alcance"};
 	JTable tabla;
 	JScrollPane Tabla;
+	static DefaultTableModel modeloCuadruplo;
+	String titulosCuadruplo[]={"Operador","Argumento 1","Argumento 2","Resultado"};
+	JTable tablaCuadruplo;
+	JScrollPane TablaCuadruplo;
 	public Vista() {
 		formatoWindows();
 		inicializaciones();
@@ -84,6 +88,9 @@ public class Vista extends JFrame implements ActionListener{
 		modelo = new DefaultTableModel(null,titulos);//Modelo de las tablas
 		tabla= new JTable(modelo);//tabla de simbolos
 		Tabla = new JScrollPane(tabla);
+		modeloCuadruplo = new DefaultTableModel(null,titulosCuadruplo);//Modelo de las tablas
+		tablaCuadruplo= new JTable(modeloCuadruplo);//tabla de simbolos
+		TablaCuadruplo = new JScrollPane(tablaCuadruplo);
 		/*Llenado del documento en pantalla*/
 		abrir();
 		/*Posicionamiento de los componentes de texto en pantalla*/
@@ -93,8 +100,10 @@ public class Vista extends JFrame implements ActionListener{
 		add(analizada);
 		resultados.setBounds(1,451,665,260);
 		add(resultados);
-		Tabla.setBounds(664, 475,685, 235);
+		Tabla.setBounds(664, 475,685, 125);
 		add(Tabla);
+		TablaCuadruplo.setBounds(664, 600,685, 105);
+		add(TablaCuadruplo);
 		setVisible(true);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 	}
@@ -143,6 +152,7 @@ public class Vista extends JFrame implements ActionListener{
 			new Semantico();
 			llena(Lex,Result,"");
 			new Intermedio();
+			new Ensamblador();
 		}
 	}
 	public boolean guardar() {
